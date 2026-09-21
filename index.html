@@ -1006,6 +1006,31 @@
     };
   }
 
+  // Wikimedia Commons : la photothèque libre derrière Wikipédia.
+  // Sert de secours quand Wikipédia n'a pas de photo pour ce mot.
+  async function commonsSearchPhoto(query) {
+    const data = await wikiJson('https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*'
+      + '&formatversion=2&prop=imageinfo&iiprop=url|mime&iiurlwidth=320'
+      + '&generator=search&gsrnamespace=6&gsrlimit=8&gsrsearch='
+      + encodeURIComponent(query + ' filetype:bitmap'));
+    const pages = data && data.query && data.query.pages;
+    if (!pages || !pages.length) return null;
+    const hit = pages
+      .slice()
+      .sort((a, b) => (a.index || 0) - (b.index || 0))
+      .find(p => {
+        const info = p.imageinfo && p.imageinfo[0];
+        return info && info.thumburl && /^image\/(jpeg|png|webp)$/.test(info.mime || '');
+      });
+    if (!hit) return null;
+    return {
+      url: hit.imageinfo[0].thumburl,
+      page: hit.imageinfo[0].descriptionurl || ('https://commons.wikimedia.org/wiki/' + encodeURIComponent(hit.title.replace(/ /g, '_'))),
+      title: hit.title,
+      source: 'commons'
+    };
+  }
+
   async function fetchPhoto(word, allowSearch) {
     const cache = getPhotoCache();
     if (cache[word]) return cache[word];
@@ -1014,7 +1039,10 @@
     if (cache[word] === null && !allowSearch) return null;
     if (!navigator.onLine) return null;
     let found = title ? await wikiArticlePhoto(title) : null;
+    // L'article existe mais sans photo : on cherche son sujet dans Commons
+    if (!found && title) found = await commonsSearchPhoto(title);
     if (!found && allowSearch) found = await wikiSearchPhoto(word);
+    if (!found && allowSearch) found = await commonsSearchPhoto(word);
     cache[word] = found || null;
     setPhotoCache(cache);
     return found;
@@ -1063,7 +1091,8 @@
     const showPhoto = async () => {
       const p = await fetchPhoto(word, !!opts.search);
       if (!p || !alive()) return false;
-      fillCard(card, word, `<img class="photo" src="${p.url}" alt="${escapeHtml(word)}">`, 'photo · Wikipédia');
+      const from = p.source === 'commons' ? 'Wikimedia Commons' : 'Wikipédia';
+      fillCard(card, word, `<img class="photo" src="${p.url}" alt="${escapeHtml(word)}">`, 'photo · ' + from);
       return true;
     };
     const showPicto = async () => {

@@ -21,6 +21,7 @@ const HOTES_IMAGES = [
   'api.arasaac.org',
   'upload.wikimedia.org',
   'fr.wikipedia.org',
+  'commons.wikimedia.org',
   'fonts.googleapis.com',
   'fonts.gstatic.com',
   'cdn.jsdelivr.net'
