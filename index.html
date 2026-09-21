@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Phrase en images</title>
 <meta name="apple-mobile-web-app-title" content="En images">
 <meta name="application-name" content="En images">
@@ -264,6 +264,19 @@
     background: var(--coral); color: white;
     font-size: 13px; line-height: 22px; padding: 0; border: none; cursor: pointer;
   }
+  .people-item .edit-btn {
+    margin-top: 8px; min-height: 36px; padding: 4px 14px;
+    font-family: inherit; font-size: 14px; font-weight: 700;
+    background: transparent; color: var(--teal); border: 2px solid var(--border); border-radius: 999px;
+  }
+  .people-item.editing { text-align: left; border-color: var(--teal); }
+  .people-item.editing img { display: block; margin: 0 auto 8px; }
+  .people-item.editing label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--ink-soft); margin-bottom: 8px; }
+  .people-item.editing input { font-size: 16px; padding: 8px 10px; width: 100%; box-sizing: border-box; }
+  .people-item .edit-error { color: #B23A12; font-size: 13px; font-weight: 700; margin: 0 0 6px; min-height: 0; }
+  .people-item .edit-error:empty { display: none; }
+  .people-item .edit-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .people-item .edit-actions button { padding: 8px 6px; font-size: 14px; }
 
   .people-form {
     display: grid; gap: 8px;
@@ -385,6 +398,128 @@
   .card .swap-btn:hover { border-color: var(--coral); color: var(--coral); }
   .card .swap-btn[disabled] { opacity: .6; cursor: default; }
 
+  /* ================= Mise en page iPhone ================= */
+  :root { --teal-dark: #1F7A6F; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    padding:
+      calc(env(safe-area-inset-top, 0px) + 20px)
+      calc(env(safe-area-inset-right, 0px) + 16px)
+      calc(env(safe-area-inset-bottom, 0px) + 40px)
+      calc(env(safe-area-inset-left, 0px) + 16px);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .wrap { max-width: 560px; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  header { margin-bottom: 16px; }
+  h1 { font-size: 34px; line-height: 1.1; margin: 0 0 6px; }
+  header p { font-size: 17px; line-height: 1.4; color: #44546C; max-width: 30ch; }
+  .status-bar {
+    display: inline-flex; margin-top: 12px; padding: 6px 12px;
+    border-radius: 999px; background: #DDEFEA;
+    font-size: 14px; font-weight: 700; color: #1C665D;
+  }
+  .status-bar:has(.dot.offline) { background: #FDE9DF; color: #9A3F17; }
+
+  /* Saisie */
+  form {
+    flex-direction: column; gap: 10px; margin: 0 0 18px;
+    background: var(--panel); padding: 14px; border-radius: 22px;
+    box-shadow: 0 2px 12px rgba(33, 48, 74, 0.07);
+  }
+  .input-wrap { position: relative; display: flex; }
+  #sentence-input {
+    width: 100%; min-height: 56px; font-size: 19px;
+    padding: 12px 52px 12px 16px; background: #F7FAF9;
+  }
+  #sentence-input:focus { outline: none; border-color: var(--teal-dark); box-shadow: 0 0 0 3px rgba(31, 122, 111, 0.22); }
+  #sentence-input:placeholder-shown + .clear-btn { display: none; }
+  /* Les exemples s'effacent dès qu'une phrase est écrite, pour laisser la place aux images */
+  form:has(#sentence-input:not(:placeholder-shown)) ~ .examples { display: none; }
+  .grid .empty-state { grid-column: 1 / -1; padding: 28px 16px; font-size: 16px; }
+  .clear-btn {
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    width: 44px; height: 44px; padding: 0; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    background: transparent; color: var(--ink-soft);
+  }
+  .clear-btn:active { transform: translateY(-50%) scale(0.94); }
+  .submit-btn { min-height: 56px; font-size: 20px; background: var(--teal-dark); }
+
+  /* Exemples et proches */
+  .examples { gap: 8px; margin-bottom: 18px; }
+  .example-chip {
+    min-height: 44px; padding: 8px 16px; font-size: 16px; font-weight: 700;
+    color: var(--ink); background: var(--panel);
+  }
+  .people-bar { margin: 0 0 18px; gap: 14px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .people-bar::-webkit-scrollbar { display: none; }
+  .person-chip { width: 76px; font-size: 14px; }
+  .person-chip img { width: 66px; height: 66px; }
+
+  /* Cartes du résultat : 2 colonnes sur iPhone */
+  .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  @media (max-width: 340px) { .grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); } }
+  .card { border-radius: 20px; padding: 12px 10px; }
+  .card img, .card .placeholder { width: 110px; height: 110px; }
+  .card img.photo { width: 116px; height: 116px; }
+  .card .placeholder { font-size: 52px; }
+  .card .word { font-size: 18px; }
+  .card .swap-btn, .card .add-photo-btn {
+    min-height: 36px; padding: 6px 12px; font-size: 13px; font-weight: 700; border-radius: 10px;
+  }
+  .sentence-echo { font-size: 17px; }
+
+  /* Panneaux repliables */
+  details.panel, .panel.people-section, .panel.library, details.help.panel {
+    margin-top: 14px; padding: 0;
+    background: var(--panel); border: 2px solid var(--border); border-radius: 20px;
+  }
+  details.panel > summary {
+    list-style: none; display: flex; align-items: center; justify-content: space-between;
+    min-height: 58px; padding: 0 18px; cursor: pointer;
+    font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 18px; color: var(--ink);
+  }
+  details.panel > summary::-webkit-details-marker { display: none; }
+  details.panel > summary::after {
+    content: ''; width: 9px; height: 9px; margin-left: 12px; flex-shrink: 0;
+    border-right: 2.5px solid var(--ink-soft); border-bottom: 2.5px solid var(--ink-soft);
+    transform: rotate(45deg) translateY(-3px); transition: transform 0.2s;
+  }
+  details.panel[open] > summary::after { transform: rotate(-135deg) translateY(-2px); }
+  details.panel > summary:focus-visible { outline: 3px solid var(--teal); outline-offset: -3px; border-radius: 18px; }
+  .panel-body { padding: 0 16px 18px; }
+  details.help.panel ol.panel-body { margin: 0; padding: 0 18px 18px 36px; }
+  .panel.people-section .panel-body > p, .panel.library .panel-body > p { font-size: 15px; }
+  .panel-body > p { color: var(--ink-soft); margin: 0 0 14px; line-height: 1.45; }
+
+  /* Réglages */
+  .panel .mode-bar {
+    flex-direction: column; align-items: stretch; justify-content: flex-start;
+    gap: 8px; margin: 0 0 18px; text-align: left;
+    font-size: 16px; font-weight: 700; color: var(--ink);
+  }
+  .panel .mode-bar:last-child { margin-bottom: 0; }
+  .panel .mode-switch {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px;
+    background: var(--bg); border: none; border-radius: 14px;
+  }
+  .panel .mode-switch button { min-height: 46px; font-size: 16px; border-radius: 11px; color: var(--ink); }
+  .panel .mode-switch button[aria-pressed="true"] { background: var(--teal-dark); color: #fff; }
+  .panel .mode-bar .mode-note { text-align: left; font-size: 14px; font-weight: 400; color: var(--ink-soft); }
+
+  /* Pas de zoom automatique de Safari : champs à 16 px minimum */
+  .add-form input[type="text"], .people-form input[type="text"],
+  .group-face input[type="text"] { font-size: 16px; }
+  .batch button, .backup button, .add-form button { min-height: 44px; }
+  .people-item .delete-btn { width: 30px; height: 30px; line-height: 30px; font-size: 16px; }
+
+  footer { margin-top: 28px; font-size: 12px; }
+
   @media (prefers-reduced-motion: reduce) { .card { animation: none; } }
 </style>
 </head>
@@ -392,33 +527,22 @@
   <div class="wrap">
     <header>
       <h1>Phrase en images</h1>
-      <p>Écris une phrase en français : les mots importants s'illustrent avec ta propre photo, une vraie photo trouvée en ligne, un pictogramme, ou un emoji.</p>
-      <div class="status-bar">
+      <p>Écris une phrase : chaque mot important devient une image.</p>
+      <div class="status-bar" id="status-bar">
         <span class="dot" id="status-dot"></span>
-        <span id="status-text">Vérification de la connexion...</span>
-      </div>
-      <div class="mode-bar">
-        <span>Images&nbsp;:</span>
-        <span class="mode-switch" role="group" aria-label="Type d'images">
-          <button type="button" id="mode-photo" aria-pressed="true">Photos</button>
-          <button type="button" id="mode-picto" aria-pressed="false">Pictogrammes</button>
-        </span>
-        <span class="mode-note">Sous chaque mot, « autre image » change seulement ce mot-là (et s'en souvient).</span>
-      </div>
-      <div class="mode-bar">
-        <span>Mots&nbsp;:</span>
-        <span class="mode-switch" role="group" aria-label="Mots illustrés">
-          <button type="button" id="mode-simple" aria-pressed="true">Phrase simplifiée</button>
-          <button type="button" id="mode-all" aria-pressed="false">Tous les mots</button>
-        </span>
-        <span class="mode-note">En simplifié, les petits mots (le, la, en, de, est…) ne prennent pas d'image ; « une pomme » garde le 1.</span>
+        <span id="status-text">Connexion…</span>
       </div>
     </header>
 
     <form id="sentence-form">
-      <input type="text" id="sentence-input" placeholder="Écris ta phrase ici..." autocomplete="off" autofocus>
-      <button type="submit">Voir</button>
-      <button type="button" class="ghost" id="clear-btn">Effacer</button>
+      <label for="sentence-input" class="sr-only">Ta phrase</label>
+      <div class="input-wrap">
+        <input type="text" id="sentence-input" placeholder="Écris ta phrase" autocomplete="off" enterkeyhint="go" autofocus>
+        <button type="button" class="clear-btn" id="clear-btn" aria-label="Effacer la phrase">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <button type="submit" class="submit-btn">Voir en images</button>
     </form>
 
     <div class="examples" id="examples"></div>
@@ -428,11 +552,34 @@
     <p class="sentence-echo" id="sentence-echo"></p>
 
     <div class="grid" id="grid">
-      <div class="empty-state">Tape une phrase et appuie sur « Voir » pour commencer.</div>
+      <div class="empty-state">Écris une phrase ou touche un exemple pour commencer.</div>
     </div>
 
-    <section class="people-section">
-      <h2>Mes proches</h2>
+    <details class="panel settings">
+      <summary>Réglages</summary>
+      <div class="panel-body">
+      <div class="mode-bar">
+          <span>Images&nbsp;:</span>
+          <span class="mode-switch" role="group" aria-label="Type d'images">
+            <button type="button" id="mode-photo" aria-pressed="true">Photos</button>
+            <button type="button" id="mode-picto" aria-pressed="false">Pictogrammes</button>
+          </span>
+          <span class="mode-note">Sous chaque mot, « autre image » change seulement ce mot-là (et s'en souvient).</span>
+        </div>
+        <div class="mode-bar">
+          <span>Mots&nbsp;:</span>
+          <span class="mode-switch" role="group" aria-label="Mots illustrés">
+            <button type="button" id="mode-simple" aria-pressed="true">Simplifiée</button>
+            <button type="button" id="mode-all" aria-pressed="false">Tous les mots</button>
+          </span>
+          <span class="mode-note">En simplifié, les petits mots (le, la, en, de, est…) ne prennent pas d'image ; « une pomme » garde le 1.</span>
+        </div>
+      </div>
+    </details>
+
+    <details class="panel people-section">
+      <summary>Gérer mes proches</summary>
+      <div class="panel-body">
       <p>Ajoute la photo d'une personne et les mots qui la désignent. Dès qu'un de ces mots est écrit, sa photo apparaît. Tu peux aussi appuyer sur son visage en haut pour l'ajouter à la phrase.</p>
       <div class="people-list" id="people-list"></div>
       <div class="people-form">
@@ -472,10 +619,12 @@
           <button type="button" class="ghost" id="group-close">Fermer</button>
         </div>
       </div>
-    </section>
+      </div>
+    </details>
 
-    <div class="library">
-      <h2>Mes photos</h2>
+    <details class="panel library">
+      <summary>Mes photos et sauvegarde</summary>
+      <div class="panel-body">
       <p>Les photos que tu ajoutes ici sont sauvegardées sur cet appareil et fonctionnent même sans connexion.</p>
       <div class="library-list" id="library-list"></div>
       <div class="add-form">
@@ -498,11 +647,12 @@
         <p><strong>Enregistrer l'appli avec mes photos dedans</strong> crée un nouveau fichier .html qui contient déjà tes proches et tes photos : il suffit de l'ouvrir pour les retrouver, même si l'appareil a tout effacé. À refaire après chaque ajout.</p>
         <p>Les photos restent uniquement sur cet appareil. Garde aussi une sauvegarde .json dans l'app Fichiers pour ne pas les perdre.</p>
       </div>
-    </div>
+      </div>
+    </details>
 
-    <details class="help">
+    <details class="help panel">
       <summary>Comment garder ça sur mon iPhone ?</summary>
-      <ol>
+      <ol class="panel-body">
         <li>Télécharge ce fichier depuis la conversation, puis ouvre-le dans l'app Fichiers.</li>
         <li>Appuie longuement dessus → « Ouvrir avec » → Safari.</li>
         <li>Dans Safari, appuie sur Partager → « Sur l'écran d'accueil » pour l'ouvrir comme une appli.</li>
@@ -513,9 +663,9 @@
       </ol>
     </details>
 
-    <details class="help">
+    <details class="help panel">
       <summary>Préparer les photos sur mon Mac</summary>
-      <ol>
+      <ol class="panel-body">
         <li>Ouvre ce fichier dans Safari sur le Mac.</li>
         <li>Dans le Finder, renomme tes photos : <strong>pomme.jpg</strong> pour un mot, <strong>Mamie Jo (mamie, grand-mère).jpg</strong> pour un proche.</li>
         <li>Utilise « Ajouter plusieurs… » et sélectionne toutes les photos d'un coup (⌘ + clic).</li>
@@ -549,10 +699,10 @@
   function updateStatus() {
     if (navigator.onLine) {
       statusDot.className = 'dot online';
-      statusText.textContent = 'En ligne — les photos et pictogrammes peuvent être recherchés';
+      statusText.textContent = 'En ligne';
     } else {
       statusDot.className = 'dot offline';
-      statusText.textContent = 'Hors-ligne — tes photos, celles déjà vues et les emoji fonctionnent quand même';
+      statusText.textContent = 'Hors ligne : tes photos marchent quand même';
     }
   }
   window.addEventListener('online', updateStatus);
@@ -1089,6 +1239,7 @@
         <img src="${person.photo}" alt="${escapeHtml(person.name)}">
         <div class="name">${escapeHtml(person.name)}</div>
         <div class="aliases">${escapeHtml(person.aliases.join(', '))}</div>
+        <button type="button" class="edit-btn" aria-label="Modifier ${escapeHtml(person.name)}">✎ Modifier</button>
       `;
       item.querySelector('.delete-btn').addEventListener('click', () => {
         if (!confirm(`Retirer ${person.name} de tes proches ?`)) return;
@@ -1096,8 +1247,50 @@
         renderPeople();
         if (input.value.trim()) handleSentence(input.value);
       });
+      item.querySelector('.edit-btn').addEventListener('click', () => openPersonEditor(item, person));
       peopleList.appendChild(item);
     });
+  }
+
+  // Modifier le prénom et les autres mots d'un proche (la photo reste la même)
+  function openPersonEditor(item, person) {
+    item.classList.add('editing');
+    item.innerHTML = `
+      <img src="${person.photo}" alt="">
+      <label>Prénom
+        <input type="text" class="edit-name" maxlength="40" value="${escapeHtml(person.name)}">
+      </label>
+      <label>Autres mots (séparés par des virgules)
+        <input type="text" class="edit-aliases" value="${escapeHtml(person.aliases.join(', '))}">
+      </label>
+      <p class="edit-error" role="alert"></p>
+      <div class="edit-actions">
+        <button type="button" class="ghost edit-cancel">Annuler</button>
+        <button type="button" class="edit-save">Enregistrer</button>
+      </div>
+    `;
+    const nameField = item.querySelector('.edit-name');
+    const aliasesField = item.querySelector('.edit-aliases');
+    const errorBox = item.querySelector('.edit-error');
+
+    function save() {
+      const name = nameField.value.trim();
+      if (!name) { errorBox.textContent = 'Le prénom ne peut pas être vide.'; nameField.focus(); return; }
+      const aliases = aliasesField.value.split(',').map(a => a.trim()).filter(Boolean);
+      const people = getPeople().map(p => p.id === person.id ? { ...p, name, aliases } : p);
+      if (!setPeople(people)) { storageFullAlert(); return; }
+      renderPeople();
+      if (input.value.trim()) handleSentence(input.value);
+    }
+
+    item.querySelector('.edit-save').addEventListener('click', save);
+    item.querySelector('.edit-cancel').addEventListener('click', renderPeople);
+    [nameField, aliasesField].forEach(f => f.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); save(); }
+      if (e.key === 'Escape') { e.preventDefault(); renderPeople(); }
+    }));
+    nameField.focus();
+    nameField.select();
   }
 
   let pendingPersonPhoto = null;
@@ -1592,7 +1785,8 @@
     };
     const clone = document.documentElement.cloneNode(true);
     const vider = (sel, html) => { const el = clone.querySelector(sel); if (el) el.innerHTML = html || ''; };
-    vider('#grid', '<div class="empty-state">Tape une phrase et appuie sur « Voir » pour commencer.</div>');
+    vider('#grid', '<div class="empty-state">Écris une phrase ou touche un exemple pour commencer.</div>');
+    clone.querySelectorAll('details[open]').forEach(d => d.removeAttribute('open'));
     vider('#sentence-echo'); vider('#people-bar'); vider('#people-list');
     vider('#library-list'); vider('#group-faces');
     const gt = clone.querySelector('#group-tool'); if (gt) gt.setAttribute('hidden', '');
